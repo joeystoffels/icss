@@ -3,6 +3,12 @@ package nl.han.ica.icss.parser;
 import java.util.Stack;
 import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.BoolLiteral;
+import nl.han.ica.icss.ast.literals.ColorLiteral;
+import nl.han.ica.icss.ast.literals.PercentageLiteral;
+import nl.han.ica.icss.ast.literals.PixelLiteral;
+import nl.han.ica.icss.ast.literals.ScalarLiteral;
+import nl.han.ica.icss.ast.selectors.ClassSelector;
+import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -12,7 +18,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * This class extracts the ICSS Abstract Syntax Tree from the Antlr Parse tree.
  */
 public class ASTListener extends ICSSBaseListener {
-	
+
 	//Accumulator attributes:
 	private AST ast;
 
@@ -23,54 +29,95 @@ public class ASTListener extends ICSSBaseListener {
 		ast = new AST();
 		currentContainer = new Stack<>();
 	}
-    public AST getAST() {
-        return ast;
-    }
-
-    @Override
-	public void exitStylesheet(ICSSParser.StylesheetContext ctx) {
-		System.out.println("ENTER_STYLESHEET: "  + ctx.getText());
+	public AST getAST() {
+		return ast;
 	}
+
+	@Override
+	public void enterStylesheet(ICSSParser.StylesheetContext ctx) {
+		this.currentContainer.push(this.ast.root);
+	}
+
+	private void add(ASTNode node){
+		this.currentContainer.push(node);
+		this.ast.root.addChild(node);
+	}
+
+	@Override
+	public void enterStylerule(ICSSParser.StyleruleContext ctx) {
+		super.enterStylerule(ctx);
+		Stylerule stylerule = new Stylerule();
+		this.add(stylerule);
+	}
+
+	@Override
+	public void enterClassSelector(ICSSParser.ClassSelectorContext ctx) {
+		super.enterClassSelector(ctx);
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new ClassSelector(ctx.getText()));
+	}
+
+	@Override
+	public void enterIdSelector(ICSSParser.IdSelectorContext ctx) {
+		super.enterIdSelector(ctx);
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new IdSelector(ctx.getText()));
+	}
+
 
 	@Override
 	public void enterTagSelector(ICSSParser.TagSelectorContext ctx) {
 		super.enterTagSelector(ctx);
-		System.out.println("TAG_SELECTOR: "  + ctx.getText());
-		TagSelector tagSelector = new TagSelector(ctx.getText());
-		currentContainer.push(tagSelector);
-		ast.root.addChild(tagSelector);
-//		ctx.children.forEach(x -> this.ast.root.addChild(new TagSelector(x.getText())));
-//		currentContainer.add(ctx.children.get(0).getParent())
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new TagSelector(ctx.getText()));
 	}
 
 	@Override
 	public void enterDeclaration(ICSSParser.DeclarationContext ctx) {
 		super.enterDeclaration(ctx);
-		System.out.println("DECLARATION: "  + ctx.getText());
-		Declaration declaration = new Declaration(ctx.getText());
-		currentContainer.push(declaration);
-		ast.root.addChild(declaration);
+		Declaration declaration = new Declaration();
+		ASTNode parent = this.currentContainer.peek();
+		if(parent instanceof Declaration){
+			this.currentContainer.pop();
+			parent = this.currentContainer.peek();
+		}
+		parent.addChild(declaration);
+		this.currentContainer.push(declaration);
 	}
 
+	@Override
+	public void enterPropertyName(ICSSParser.PropertyNameContext ctx) {
+		super.enterPropertyName(ctx);
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new PropertyName(ctx.getText()));
+	}
 
+	@Override
+	public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
+		super.enterPixelLiteral(ctx);
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new PixelLiteral(ctx.getText()));
+	}
 
-//	@Override
-//	public void enterLiteral(ICSSParser.LiteralContext ctx) {
-//		super.enterLiteral(ctx);
-//		System.out.println("LITERAL: " + ctx.getText());
-//		Literal literal = new BoolLiteral(ctx.getText());
-//		currentContainer.push(literal);
-//		ast.root.addChild(literal);
-////		ctx.children.forEach(x -> this.ast.root.addChild(new BoolLiteral(ctx.getText())));
-//	}
+	@Override
+	public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
+		super.enterPercentageLiteral(ctx);
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new PercentageLiteral(ctx.getText()));
+	}
 
-//	@Override
-//	public void enterPropertyName(ICSSParser.PropertyNameContext ctx) {
-//		super.enterPropertyName(ctx);
-//		System.out.println("PROPERTY_NAME: " + ctx.getText());
-//		PropertyName propertyName = new PropertyName(ctx.getText());
-//		currentContainer.push(propertyName);
-//		ast.root.addChild(propertyName);
-////		ctx.children.forEach(x -> this.ast.root.addChild(new PropertyName(x.getText())));
-//	}
+	@Override
+	public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
+		super.enterColorLiteral(ctx);
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new ColorLiteral(ctx.getText()));
+	}
+
+	@Override
+	public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
+		super.enterScalarLiteral(ctx);
+		ASTNode parent = this.currentContainer.peek();
+		parent.addChild(new ScalarLiteral(ctx.getText()));
+	}
+
 }
