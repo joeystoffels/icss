@@ -17,7 +17,7 @@ public class Stylerule extends ASTNode {
     	this.body = body;
     }
 
-    @Override
+	@Override
 	public String getNodeLabel() {
 		return "Stylerule";
 	}

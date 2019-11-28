@@ -12,6 +12,11 @@ public class ClassSelector extends Selector {
     }
 
     @Override
+    public String getCssString() {
+        return cls;
+    }
+
+    @Override
     public String getNodeLabel() {
         return "ClassSelector " + cls;
     }
