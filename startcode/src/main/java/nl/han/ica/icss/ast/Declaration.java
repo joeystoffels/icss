@@ -66,4 +66,8 @@ public class Declaration extends ASTNode implements IChecker {
 	public int hashCode() {
 		return Objects.hash(property, expression);
 	}
+
+	public String cssString() {
+		return "{" + expression + "}";
+	}
 }

@@ -14,4 +14,9 @@ public class MultiplyOperation extends Operation {
     public ExpressionType getExpressionType() {
         return null;
     }
+
+    @Override
+    public String getCssString() {
+        return null;
+    }
 }

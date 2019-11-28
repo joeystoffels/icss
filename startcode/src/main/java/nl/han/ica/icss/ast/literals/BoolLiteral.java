@@ -22,6 +22,11 @@ public class BoolLiteral extends Literal {
     }
 
     @Override
+    public String getCssString() {
+        return Boolean.toString(value);
+    }
+
+    @Override
     public String getNodeLabel() {
         String textValue = value ? "TRUE" : "FALSE";
         return "Bool Literal (" + textValue + ")";

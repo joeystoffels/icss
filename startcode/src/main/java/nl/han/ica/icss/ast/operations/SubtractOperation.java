@@ -14,4 +14,9 @@ public class SubtractOperation extends Operation {
     public ExpressionType getExpressionType() {
         return null;
     }
+
+    @Override
+    public String getCssString() {
+        return null;
+    }
 }

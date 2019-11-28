@@ -18,6 +18,11 @@ public class VariableReference extends Expression {
 	}
 
 	@Override
+	public String getCssString() {
+		return null;
+	}
+
+	@Override
 	public String getNodeLabel() {
 		return "VariableReference (" + name + ")";
 	}

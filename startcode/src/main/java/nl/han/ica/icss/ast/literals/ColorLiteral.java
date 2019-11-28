@@ -23,6 +23,11 @@ public class ColorLiteral extends Literal {
     }
 
     @Override
+    public String getCssString() {
+        return value;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -22,6 +22,11 @@ public class PixelLiteral extends Literal {
     }
 
     @Override
+    public String getCssString() {
+        return Integer.toString(value);
+    }
+
+    @Override
     public String getNodeLabel() {
         return "Pixel literal (" + value + ")";
     }
