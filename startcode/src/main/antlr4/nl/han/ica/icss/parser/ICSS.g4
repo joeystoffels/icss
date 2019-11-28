@@ -39,5 +39,21 @@ MUL: '*';
 ASSIGNMENT_OPERATOR: ':=';
 
 //--- PARSER: ---
+stylesheet: stylerule* EOF;
+stylerule: selector OPEN_BRACE declaration* CLOSE_BRACE;
 
-stylesheet: EOF;
+// Selectors
+selector: classSelector | idSelector | tagSelector;
+classSelector: CLASS_IDENT;
+idSelector: ID_IDENT;
+tagSelector: LOWER_IDENT;
+
+// Declaration
+declaration: propertyName COLON literal SEMICOLON;
+propertyName: LOWER_IDENT;
+literal: pixelLiteral | precentageLiteral | colorLiteral | scalarLiteral | boolLiteral;
+pixelLiteral: PIXELSIZE;
+precentageLiteral: PERCENTAGE;
+colorLiteral: COLOR;
+scalarLiteral: SCALAR;
+boolLiteral: TRUE | FALSE;
