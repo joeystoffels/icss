@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class PercentageLiteral extends Literal {
 
-    public int value;
+    private int value;
 
     public PercentageLiteral(int value) {
         this.value = value;
@@ -22,8 +22,8 @@ public class PercentageLiteral extends Literal {
     }
 
     @Override
-    public String getCssString() {
-        return Integer.toString(value);
+    public String getValue() {
+        return String.valueOf(this.value);
     }
 
     @Override

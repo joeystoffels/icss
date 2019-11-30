@@ -5,7 +5,7 @@ import nl.han.ica.icss.ast.Selector;
 import java.util.Objects;
 
 public class TagSelector extends Selector {
-    public String tag;
+    private String tag;
 
     public TagSelector(String tag) {
         this.tag = tag;
@@ -14,12 +14,9 @@ public class TagSelector extends Selector {
     public String getNodeLabel() {
         return "TagSelector " + tag;
     }
-    public String toString() {
-        return tag;
-    }
 
     @Override
-    public String getCssString() {
+    public String getSelector() {
         return tag;
     }
 

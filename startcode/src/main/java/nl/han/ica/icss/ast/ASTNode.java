@@ -1,11 +1,12 @@
 package nl.han.ica.icss.ast;
 
 import nl.han.ica.icss.checker.SemanticError;
+import nl.han.ica.icss.generator.ICssString;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASTNode {
+public class ASTNode implements ICssString {
 
     private SemanticError error = null;
 
@@ -18,22 +19,33 @@ public class ASTNode {
     }
 
     /*
+     Default implementation of getCssString, when a custom one is needed
+     in one of its children it should be overridden there.
+     */
+    @Override
+    public String getCssString() {
+        return "";
+    }
+
+    /*
      Different AST nodes use different attributes to store their children.
      This method provides a unified interface.
      */
     public ArrayList<ASTNode> getChildren() {
         return new ArrayList<>();
     }
+
     /*
     By implementing this method in a subclass you can easily create AST nodes
       incrementally.
     */
     public ASTNode addChild(ASTNode child) {
-            return this;
+        return this;
     }
+
     /*
-    * By implementing this method you can easily make transformations that prune the AST.
-    */
+     * By implementing this method you can easily make transformations that prune the AST.
+     */
     public ASTNode removeChild(ASTNode child) {
         return this;
     }
@@ -50,33 +62,34 @@ public class ASTNode {
         return error != null;
     }
 
-	@Override
-	public String toString() {
-		StringBuilder result = new StringBuilder();
-		toString(result);
-		return result.toString();
-	}
-	private void toString(StringBuilder builder) {
-		builder.append("[");
-		builder.append(getNodeLabel());	
-		builder.append("|");
-		for(ASTNode child : getChildren()) {
-			child.toString(builder);
-		}	
-		builder.append("]");
-	}
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        toString(result);
+        return result.toString();
+    }
 
-	@Override
+    private void toString(StringBuilder builder) {
+        builder.append("[");
+        builder.append(getNodeLabel());
+        builder.append("|");
+        for (ASTNode child : getChildren()) {
+            child.toString(builder);
+        }
+        builder.append("]");
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if(! (o instanceof ASTNode))
+        if (!(o instanceof ASTNode))
             return false;
         //Compare all children
         List<ASTNode> thisChildren = this.getChildren();
         List<ASTNode> otherChildren = ((ASTNode) o).getChildren();
-        if(otherChildren.size() != thisChildren.size())
+        if (otherChildren.size() != thisChildren.size())
             return false;
-        for(int i = 0; i < thisChildren.size(); i++ ) {
-            if(!thisChildren.get(i).equals(otherChildren.get(i))) {
+        for (int i = 0; i < thisChildren.size(); i++) {
+            if (!thisChildren.get(i).equals(otherChildren.get(i))) {
                 return false;
             }
         }

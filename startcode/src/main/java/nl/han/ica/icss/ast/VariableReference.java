@@ -7,18 +7,18 @@ import java.util.Objects;
 public class VariableReference extends Expression {
 
 	public String name;
-	
+
+	@Override
+	public String getValue() {
+		return null;
+	}
+
 	public VariableReference(String name) {
 		super();
 		this.name = name;
 	}
 
 	public ExpressionType getExpressionType() {
-		return null;
-	}
-
-	@Override
-	public String getCssString() {
 		return null;
 	}
 

@@ -5,7 +5,7 @@ import nl.han.ica.icss.ast.Selector;
 import java.util.Objects;
 
 public class IdSelector extends Selector {
-    public String id;
+    private String id;
 
     public IdSelector(String id) {
         this.id = id;
@@ -14,12 +14,9 @@ public class IdSelector extends Selector {
     public String getNodeLabel() {
         return "IdSelector " + id;
     }
-    public String toString() {
-        return id;
-    }
 
     @Override
-    public String getCssString() {
+    public String getSelector() {
         return id;
     }
 

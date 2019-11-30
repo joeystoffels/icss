@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class ColorLiteral extends Literal {
 
-    public String value;
+    private String value;
 
     public ColorLiteral(String value) {
         this.value = value;
@@ -23,8 +23,8 @@ public class ColorLiteral extends Literal {
     }
 
     @Override
-    public String getCssString() {
-        return value;
+    public String getValue() {
+        return String.valueOf(this.value);
     }
 
     @Override

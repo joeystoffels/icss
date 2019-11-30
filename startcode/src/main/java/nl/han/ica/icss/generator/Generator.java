@@ -2,30 +2,30 @@ package nl.han.ica.icss.generator;
 
 import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
-import nl.han.ica.icss.ast.Declaration;
-import nl.han.ica.icss.ast.Expression;
-
-import java.util.ArrayList;
+import nl.han.ica.icss.ast.Stylerule;
 
 public class Generator {
 
-	private ArrayList<ASTNode> nodes = new ArrayList<>();
+    private StringBuilder cssString = new StringBuilder();
 
     public String generate(AST ast) {
-        findAllNodes(ast.root);
-        nodes.stream().filter(x -> x instanceof Expression).forEach(x -> printCss((Expression) x));
-        return "SUCCESS";
+        ast.root.getChildren().forEach(this::printNodes);
+        return cssString.toString();
     }
 
-    private void findAllNodes(ASTNode node) {
-        if (!node.getChildren().isEmpty()) {
-            nodes.addAll(node.getChildren());
-            node.getChildren().forEach(this::findAllNodes);
+    private void printNodes(ASTNode node) {
+        cssString.append(node.getCssString());
+
+        if (node instanceof Stylerule) {
+            ((Stylerule) node).selectors.forEach(x -> cssString.append(x.getSelector()));
+            cssString.append(" { ");
+        }
+
+        node.getChildren().forEach(this::printNodes);
+
+        if (node instanceof Stylerule) {
+            cssString.append("\n } \n\n");
         }
     }
 
-    private void printCss(Expression node) {
-        System.out.println(node.getCssString());
-//        node.getChildren().stream().filter(x -> x instanceof Expression).forEach(x -> printCss((Expression) x));
-    }
 }

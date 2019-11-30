@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class ScalarLiteral extends Literal {
 
-    public int value;
+    private int value;
 
     public ScalarLiteral(int value) {
         this.value = value;
@@ -19,6 +19,11 @@ public class ScalarLiteral extends Literal {
 
     public ExpressionType getExpressionType() {
         return ExpressionType.SCALAR;
+    }
+
+    @Override
+    public String getValue() {
+        return String.valueOf(this.value);
     }
 
     @Override

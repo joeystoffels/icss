@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class BoolLiteral extends Literal {
 
-    public boolean value;
+    private boolean value;
 
     public BoolLiteral(boolean value) {
         this.value = value;
@@ -22,8 +22,8 @@ public class BoolLiteral extends Literal {
     }
 
     @Override
-    public String getCssString() {
-        return Boolean.toString(value);
+    public String getValue() {
+        return String.valueOf(this.value);
     }
 
     @Override
