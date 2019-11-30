@@ -1,0 +1,11 @@
+LinkColor := #ff0000;
+ParWidth := 500px;
+
+p {
+	background-color: #ffffff;
+	width: 2px + ParWidth * 5 - 100px;
+}
+
+a {
+	color: LinkColor;
+}

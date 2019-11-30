@@ -1,0 +1,6 @@
+Color := #ff00ff;
+
+span {
+
+	width: Color;
+}

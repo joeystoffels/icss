@@ -1,0 +1,5 @@
+BaseWidth := 2px;
+
+p {
+	width: 100px + BaseWidth;
+}

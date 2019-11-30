@@ -1,0 +1,16 @@
+AdjustColor := TRUE;
+
+p {
+	background-color: #ffffff;
+	width: 10px;
+}
+.menu {
+	color: #000000;
+
+	if[AdjustColor] {
+        UseLinkColor := FALSE;
+        if [UseLinkColor]{
+            color: #123123;
+        }
+    }
+}

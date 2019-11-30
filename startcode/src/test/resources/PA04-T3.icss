@@ -1,0 +1,6 @@
+#menu {
+    width: 20px;
+    if [UnknownVariable]{
+        color: #123123;
+    }
+}

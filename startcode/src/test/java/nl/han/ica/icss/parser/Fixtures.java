@@ -255,7 +255,7 @@ public class Fixtures {
 								.addChild(new ColorLiteral("#124532"))))
 							.addChild((new IfClause())
 									.addChild(new VariableReference("UseLinkColor"))
-									.addChild(new Declaration("bg-color").addChild(new VariableReference("LinkColor")))
+									.addChild(new Declaration("background-color").addChild(new VariableReference("LinkColor")))
 					))
         );
         /*
