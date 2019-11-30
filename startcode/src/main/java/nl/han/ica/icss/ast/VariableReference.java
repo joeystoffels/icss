@@ -19,7 +19,7 @@ public class VariableReference extends Expression {
 	}
 
 	public ExpressionType getExpressionType() {
-		return null;
+		return ExpressionType.UNDEFINED;
 	}
 
 	@Override

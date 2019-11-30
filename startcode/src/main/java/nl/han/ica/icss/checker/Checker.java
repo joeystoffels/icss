@@ -10,12 +10,12 @@ import java.util.LinkedList;
 
 public class Checker {
 
-    private LinkedList<HashMap<String, ExpressionType>> variableTypes;
+//    private LinkedList<HashMap<String, ExpressionType>> variableTypes;
 
     private ArrayList<ASTNode> nodes = new ArrayList<>();
 
     public void check(AST ast) {
-        variableTypes = new LinkedList<>();
+//        variableTypes = new LinkedList<>();
         findAllNodes(ast.root);
         nodes.stream().filter(x -> x instanceof IChecker).forEach(x -> ((IChecker) x).check());
     }
