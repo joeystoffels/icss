@@ -4,7 +4,6 @@ import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.Declaration;
 import nl.han.ica.icss.ast.IfClause;
-import nl.han.ica.icss.ast.Operation;
 import nl.han.ica.icss.ast.PropertyName;
 import nl.han.ica.icss.ast.Stylerule;
 import nl.han.ica.icss.ast.VariableAssignment;
@@ -20,8 +19,12 @@ import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
+import nl.han.ica.icss.ast.types.ExpressionType;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 /**
  * This class extracts the ICSS Abstract Syntax Tree from the Antlr Parse tree.
@@ -187,14 +190,11 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) {
         super.enterVariableReference(ctx);
-        ASTNode parent = this.currentContainer.peek();
         VariableReference variableReference = new VariableReference(ctx.getText());
-        if (parent instanceof Declaration) {
-            variableReference.setExpressionType(parent.);
-        }
+        ASTNode parent = this.currentContainer.peek();
         parent.addChild(variableReference);
     }
-
+    
     @Override
     public void exitVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
         super.exitVariableAssignment(ctx);
@@ -203,4 +203,5 @@ public class ASTListener extends ICSSBaseListener {
             ((VariableAssignment) parent).name.setExpressionType(((VariableAssignment) parent).expression.getExpressionType());
         }
     }
+
 }

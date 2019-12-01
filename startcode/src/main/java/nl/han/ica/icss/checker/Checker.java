@@ -7,6 +7,7 @@ import nl.han.ica.icss.ast.VariableAssignment;
 import nl.han.ica.icss.ast.VariableReference;
 import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
+import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.ArrayList;
 
@@ -45,8 +46,18 @@ public class Checker {
     private void checkOperands() {
         for (ASTNode node : nodes) {
             if (node instanceof AddOperation || node instanceof SubtractOperation) {
-                if (!((Operation) node).lhs.getExpressionType().equals(((Operation) node).rhs.getExpressionType())) {
-                    node.setError("Operands are not matching for operation: " + node.getNodeLabel() + " lhs: " + ((Operation) node).lhs.getExpressionType() + " rhs: " + ((Operation) node).rhs.getExpressionType());
+                Operation operation = (Operation) node;
+                if (!(operation.lhs.getExpressionType().equals((operation.rhs.getExpressionType())))) {
+                    if (operation.lhs instanceof VariableReference && operation.lhs.getExpressionType().equals(ExpressionType.UNDEFINED)) {
+                        if (nodes.stream().filter(x -> x instanceof VariableReference)
+                                .noneMatch(y -> ((VariableReference) y).name.equals(((VariableReference) operation.lhs).name) &&
+                                        !((VariableReference) y).getExpressionType().equals(ExpressionType.UNDEFINED))) {
+                            node.setError("Operands are not matching for operation: " +
+                                    node.getNodeLabel() + " lhs: " +
+                                    ((Operation) node).lhs.getExpressionType() +
+                                    " rhs: " + ((Operation) node).rhs.getExpressionType());
+                        }
+                    }
                 }
             }
         }
