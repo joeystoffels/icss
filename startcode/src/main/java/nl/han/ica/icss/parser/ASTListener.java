@@ -4,6 +4,7 @@ import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.Declaration;
 import nl.han.ica.icss.ast.IfClause;
+import nl.han.ica.icss.ast.Operation;
 import nl.han.ica.icss.ast.PropertyName;
 import nl.han.ica.icss.ast.Stylerule;
 import nl.han.ica.icss.ast.VariableAssignment;
@@ -144,13 +145,6 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) {
-        super.enterVariableReference(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new VariableReference(ctx.getText()));
-    }
-
-    @Override
     public void enterAddOperation(ICSSParser.AddOperationContext ctx) {
         super.enterAddOperation(ctx);
         ASTNode parent = this.currentContainer.peek();
@@ -188,5 +182,25 @@ public class ASTListener extends ICSSBaseListener {
         IfClause ifClause = new IfClause();
         parent.addChild(ifClause);
         this.currentContainer.push(ifClause);
+    }
+
+    @Override
+    public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) {
+        super.enterVariableReference(ctx);
+        ASTNode parent = this.currentContainer.peek();
+        VariableReference variableReference = new VariableReference(ctx.getText());
+        if (parent instanceof Declaration) {
+            variableReference.setExpressionType(parent.);
+        }
+        parent.addChild(variableReference);
+    }
+
+    @Override
+    public void exitVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
+        super.exitVariableAssignment(ctx);
+        ASTNode parent = this.currentContainer.peek();
+        if (parent instanceof VariableAssignment) {
+            ((VariableAssignment) parent).name.setExpressionType(((VariableAssignment) parent).expression.getExpressionType());
+        }
     }
 }
