@@ -3,6 +3,7 @@ package nl.han.ica.icss.parser;
 import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.Declaration;
+import nl.han.ica.icss.ast.IfClause;
 import nl.han.ica.icss.ast.PropertyName;
 import nl.han.ica.icss.ast.Stylerule;
 import nl.han.ica.icss.ast.VariableAssignment;
@@ -27,15 +28,10 @@ import java.util.Stack;
 public class ASTListener extends ICSSBaseListener {
 
     //Accumulator attributes:
-    private AST ast;
+    private AST ast = new AST();
 
     //Use this to keep track of the parent nodes when recursively traversing the ast
-    private Stack<ASTNode> currentContainer;
-
-    public ASTListener() {
-        ast = new AST();
-        currentContainer = new Stack<>();
-    }
+    private Stack<ASTNode> currentContainer = new Stack<>();
 
     public AST getAST() {
         return ast;
@@ -71,7 +67,6 @@ public class ASTListener extends ICSSBaseListener {
         ASTNode parent = this.currentContainer.peek();
         parent.addChild(new IdSelector(ctx.getText()));
     }
-
 
     @Override
     public void enterTagSelector(ICSSParser.TagSelectorContext ctx) {
@@ -146,7 +141,6 @@ public class ASTListener extends ICSSBaseListener {
         }
         parent.addChild(assignment);
         this.currentContainer.push(assignment);
-
     }
 
     @Override
@@ -160,20 +154,39 @@ public class ASTListener extends ICSSBaseListener {
     public void enterAddOperation(ICSSParser.AddOperationContext ctx) {
         super.enterAddOperation(ctx);
         ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new AddOperation());
+        AddOperation addOperation = new AddOperation();
+        parent.addChild(addOperation);
+        this.currentContainer.push(addOperation);
     }
 
     @Override
     public void enterSubtractOperation(ICSSParser.SubtractOperationContext ctx) {
         super.enterSubtractOperation(ctx);
         ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new SubtractOperation());
+        SubtractOperation subtractOperation = new SubtractOperation();
+        parent.addChild(subtractOperation);
+        this.currentContainer.push(subtractOperation);
     }
 
     @Override
     public void enterMultiplyOperation(ICSSParser.MultiplyOperationContext ctx) {
         super.enterMultiplyOperation(ctx);
         ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new MultiplyOperation());
+        MultiplyOperation multiplyOperation = new MultiplyOperation();
+        parent.addChild(multiplyOperation);
+        this.currentContainer.push(multiplyOperation);
+    }
+
+    @Override
+    public void enterIfClause(ICSSParser.IfClauseContext ctx) {
+        super.enterIfClause(ctx);
+        ASTNode parent = this.currentContainer.peek();
+        if (parent instanceof Declaration) {
+            this.currentContainer.pop();
+            parent = this.currentContainer.peek();
+        }
+        IfClause ifClause = new IfClause();
+        parent.addChild(ifClause);
+        this.currentContainer.push(ifClause);
     }
 }

@@ -1,5 +1,7 @@
 package nl.han.ica.icss.ast;
 
+import nl.han.ica.icss.ast.literals.BoolLiteral;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -9,7 +11,9 @@ public class IfClause extends ASTNode {
     public Expression conditionalExpression;
     public ArrayList<ASTNode> body = new ArrayList<>();
 
-    public IfClause() { }
+    public IfClause() {
+        this.conditionalExpression = new BoolLiteral("FALSE");
+    }
 
     public IfClause(Expression conditionalExpression, ArrayList<ASTNode> body) {
 
