@@ -29,9 +29,9 @@ public class Declaration extends ASTNode implements IChecker {
 
     @Override
     public void check() {
-        if (property.name.equals("width") && expression.getExpressionType() != ExpressionType.PIXEL) {
+//        if (property.name.equals("width") && expression.getExpressionType() != ExpressionType.PIXEL) {
 //            expression.setError("ERROR");
-        }
+//        }
     }
 
     @Override
