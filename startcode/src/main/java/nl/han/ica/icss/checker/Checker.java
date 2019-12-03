@@ -24,7 +24,6 @@ public class Checker {
 
     public void check(AST ast) {
         findAllNodes(ast.root);
-        nodes.stream().filter(x -> x instanceof IChecker).forEach(x -> ((IChecker) x).check());
         this.checkVars();
         this.checkOperations();
     }

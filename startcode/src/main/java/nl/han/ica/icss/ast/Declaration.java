@@ -1,15 +1,12 @@
 package nl.han.ica.icss.ast;
 
-import nl.han.ica.icss.ast.types.ExpressionType;
-import nl.han.ica.icss.checker.IChecker;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
 /*
  * A Declaration defines a style property. Declarations are things like "width: 100px"
  */
-public class Declaration extends ASTNode implements IChecker {
+public class Declaration extends ASTNode {
     private PropertyName property;
     private Expression expression;
 
@@ -26,13 +23,6 @@ public class Declaration extends ASTNode implements IChecker {
 	public String getCssString() {
     	return "\n\t" + this.property.name + ": " + expression.getValue() + ";";
 	}
-
-    @Override
-    public void check() {
-//        if (property.name.equals("width") && expression.getExpressionType() != ExpressionType.PIXEL) {
-//            expression.setError("ERROR");
-//        }
-    }
 
     @Override
     public String getNodeLabel() {
