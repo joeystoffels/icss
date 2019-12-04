@@ -21,7 +21,7 @@ public class Declaration extends ASTNode {
 
     @Override
 	public String getCssString() {
-    	return "\n\t" + this.property.name + ": " + expression.getValue() + ";";
+    	return "\n  " + this.property.name + ": " + expression.getValue() + ";";
 	}
 
     @Override
@@ -65,7 +65,4 @@ public class Declaration extends ASTNode {
         return Objects.hash(property, expression);
     }
 
-    public String cssString() {
-        return "{" + expression + "}";
-    }
 }

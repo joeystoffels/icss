@@ -234,7 +234,7 @@ class ParserInstructorTest {
         final String astExpected = "[Stylesheet|[Stylerule|[TagSelector p|][Declaration|[Property: (width)|][Add|[Pixel literal (100)|][Multiply|[Scalar literal (40)|][Pixel literal (2)|]]]]]]";
         final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
                 "p {\n" +
-                "\twidth: 180px;\n" +
+                "  width: 180px;\n" +
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);
     }
@@ -247,7 +247,7 @@ class ParserInstructorTest {
         final String cssExpected = "/* Generated from ICSS, do not edit */\n" +
                 "\n" +
                 "p {\n" +
-                "\twidth: 102px;\n" +
+                "  width: 102px;\n" +
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);
     }
@@ -259,10 +259,10 @@ class ParserInstructorTest {
         final String astExpected = "[Stylesheet|[VariableAssignment (BaseWidth)|[VariableReference (BaseWidth)|][Pixel literal (2)|]][Stylerule|[TagSelector p|][VariableAssignment (BaseWidth)|[VariableReference (BaseWidth)|][Pixel literal (10)|]][Declaration|[Property: (width)|][Add|[Pixel literal (100)|][VariableReference (BaseWidth)|]]]][Stylerule|[TagSelector a|][Declaration|[Property: (width)|][VariableReference (BaseWidth)|]]]]";
         final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
                 "p {\n" +
-                "\twidth: 110px;\n" +
+                "  width: 110px;\n" +
                 "}\n" +
                 "a {\n" +
-                "\twidth: 2px;\n" +
+                "  width: 2px;\n" +
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);
     }
@@ -274,15 +274,15 @@ class ParserInstructorTest {
         final String astExpected = "[Stylesheet|[VariableAssignment (AdjustColor)|[VariableReference (AdjustColor)|][Bool Literal (TRUE)|]][Stylerule|[TagSelector p|][Declaration|[Property: (background-color)|][Color literal (#ffffff)|]][Declaration|[Property: (width)|][Pixel literal (10)|]]][Stylerule|[IdSelector #menu|][Declaration|[Property: (width)|][Pixel literal (20)|]]][Stylerule|[ClassSelector .menu|][Declaration|[Property: (color)|][Color literal (#000000)|]][If_Clause|[VariableReference (AdjustColor)|][VariableAssignment (UseLinkColor)|[VariableReference (UseLinkColor)|][Bool Literal (TRUE)|]][If_Clause|[VariableReference (UseLinkColor)|][Declaration|[Property: (color)|][Color literal (#123123)|]]]]]]";
         final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
                 "p {\n" +
-                "\tbackground-color: #ffffff;\n" +
-                "\twidth: 10px;\n" +
+                "  background-color: #ffffff;\n" +
+                "  width: 10px;\n" +
                 "}\n" +
                 "#menu {\n" +
-                "\twidth: 20px;\n" +
+                "  width: 20px;\n" +
                 "}\n" +
                 ".menu {\n" +
-                "\tcolor: #000000;\n" +
-                "\tcolor: #123123;\n" +
+                "  color: #000000;\n" +
+                "  color: #123123;\n" +
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);
     }
@@ -294,14 +294,14 @@ class ParserInstructorTest {
         final String astExpected = "[Stylesheet|[Stylerule|[TagSelector p|][Declaration|[Property: (background-color)|][Color literal (#ffffff)|]][Declaration|[Property: (width)|][Pixel literal (10)|]]][Stylerule|[IdSelector #menu|][Declaration|[Property: (width)|][Pixel literal (100)|]]][Stylerule|[ClassSelector .menu|][Declaration|[Property: (color)|][Color literal (#000000)|]]]]";
         final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
                 "p {\n" +
-                "\tbackground-color: #ffffff;\n" +
-                "\twidth: 10px;\n" +
+                "  background-color: #ffffff;\n" +
+                "  width: 10px;\n" +
                 "}\n" +
                 "#menu {\n" +
-                "\twidth: 100px;\n" +
+                "  width: 100px;\n" +
                 "}\n" +
                 ".menu {\n" +
-                "\tcolor: #000000;\n" +
+                "  color: #000000;\n" +
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);
     }
