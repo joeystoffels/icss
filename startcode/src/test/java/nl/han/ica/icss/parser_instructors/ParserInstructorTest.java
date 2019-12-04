@@ -216,7 +216,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("CH04-T1.icss")).toURI());
         final String astExpected = "[Stylesheet|[Stylerule|[TagSelector span|][Declaration|[Property: (color)|][Pixel literal (100)|]]]]";
-        parseCheck(path, astExpected, true);
+        parseCheck(path, astExpected, false);
     }
 
     @Test
@@ -224,7 +224,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("CH04-T2.icss")).toURI());
         final String astExpected = "[Stylesheet|[VariableAssignment (Color)|[VariableReference (Color)|][Color literal (#ff00ff)|]][Stylerule|[TagSelector span|][Declaration|[Property: (width)|][VariableReference (Color)|]]]]";
-        parseCheck(path, astExpected, true);
+        parseCheck(path, astExpected, false);
     }
 
     @Test

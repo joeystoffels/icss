@@ -7,8 +7,8 @@ import java.util.Objects;
  * A Declaration defines a style property. Declarations are things like "width: 100px"
  */
 public class Declaration extends ASTNode {
-    private PropertyName property;
-    private Expression expression;
+    public PropertyName property;
+    public Expression expression;
 
     public Declaration() {
         super();
