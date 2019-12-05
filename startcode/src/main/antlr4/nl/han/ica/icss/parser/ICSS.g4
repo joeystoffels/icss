@@ -46,14 +46,14 @@ stylerule: selector stylerulecontent;
 stylerulecontent: OPEN_BRACE (declaration | ifClause | variableAssignment)* CLOSE_BRACE;
 
 // Selector
-selector: classSelector | (idSelector | tagSelector);
+selector: classSelector | idSelector | tagSelector ;
 classSelector: CLASS_IDENT;
 idSelector: ID_IDENT;
 tagSelector: LOWER_IDENT;
 
 // Declaration
 declaration: propertyName COLON expression SEMICOLON;
-expression: literal | operation | ifClause;
+expression: operation | literal | ifClause | variableAssignment;
 propertyName: LOWER_IDENT;
 
 // Variable
@@ -62,9 +62,14 @@ variableReference: CAPITAL_IDENT;
 
 // Operation
 operation: addOperation | subtractOperation | multiplyOperation;
-addOperation: literal PLUS literal | literal PLUS operation;
-subtractOperation: literal MIN literal | literal MIN operation;
-multiplyOperation: literal MUL literal | literal MUL operation;
+multiplyOperation: multiplyOperation MUL literal | literal MUL literal | literal MUL operation;
+subtractOperation: subtractOperation MIN literal | literal MIN operation | addOperation MIN literal;
+addOperation: addOperation PLUS literal | literal PLUS operation;
+
+//                | (subtractOperation | multiplyOperation) PLUS literal
+//                | literal PLUS literal
+//                | literal PLUS operation
+//                | addOperation PLUS operation;
 
 // If clause
 ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE stylerulecontent;

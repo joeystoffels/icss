@@ -9,7 +9,6 @@ public class Generator {
     private StringBuilder cssString = new StringBuilder();
 
     public String generate(AST ast) {
-        cssString.append("/* Generated from ICSS, do not edit */\n\n");
         ast.root.getChildren().forEach(this::printNodes);
         return cssString.toString();
     }

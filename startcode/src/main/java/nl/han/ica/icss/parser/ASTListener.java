@@ -4,6 +4,7 @@ import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.Declaration;
 import nl.han.ica.icss.ast.IfClause;
+import nl.han.ica.icss.ast.Operation;
 import nl.han.ica.icss.ast.PropertyName;
 import nl.han.ica.icss.ast.Stylerule;
 import nl.han.ica.icss.ast.VariableAssignment;
@@ -19,12 +20,8 @@ import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
-import nl.han.ica.icss.ast.types.ExpressionType;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * This class extracts the ICSS Abstract Syntax Tree from the Antlr Parse tree.
@@ -56,6 +53,7 @@ public class ASTListener extends ICSSBaseListener {
         super.enterStylerule(ctx);
         Stylerule stylerule = new Stylerule();
         this.add(stylerule);
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -63,6 +61,7 @@ public class ASTListener extends ICSSBaseListener {
         super.enterClassSelector(ctx);
         ASTNode parent = this.currentContainer.peek();
         parent.addChild(new ClassSelector(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -70,6 +69,7 @@ public class ASTListener extends ICSSBaseListener {
         super.enterIdSelector(ctx);
         ASTNode parent = this.currentContainer.peek();
         parent.addChild(new IdSelector(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -77,6 +77,7 @@ public class ASTListener extends ICSSBaseListener {
         super.enterTagSelector(ctx);
         ASTNode parent = this.currentContainer.peek();
         parent.addChild(new TagSelector(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -84,12 +85,13 @@ public class ASTListener extends ICSSBaseListener {
         super.enterDeclaration(ctx);
         Declaration declaration = new Declaration();
         ASTNode parent = this.currentContainer.peek();
-        if (parent instanceof Declaration) {
+        while (parent instanceof Declaration || parent instanceof VariableAssignment) {
             this.currentContainer.pop();
             parent = this.currentContainer.peek();
         }
         parent.addChild(declaration);
         this.currentContainer.push(declaration);
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -97,41 +99,67 @@ public class ASTListener extends ICSSBaseListener {
         super.enterPropertyName(ctx);
         ASTNode parent = this.currentContainer.peek();
         parent.addChild(new PropertyName(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
     public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
         super.enterPixelLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (parent instanceof Operation && (((Operation) parent).lhs != null && ((Operation) parent).rhs != null)) {
+            this.currentContainer.pop();
+            parent = this.currentContainer.peek();
+        }
         parent.addChild(new PixelLiteral(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
     public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
         super.enterPercentageLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (parent instanceof Operation && (((Operation) parent).lhs != null && ((Operation) parent).rhs != null)) {
+            this.currentContainer.pop();
+            parent = this.currentContainer.peek();
+        }
         parent.addChild(new PercentageLiteral(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
     public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
         super.enterColorLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (parent instanceof Operation && (((Operation) parent).lhs != null && ((Operation) parent).rhs != null)) {
+            this.currentContainer.pop();
+            parent = this.currentContainer.peek();
+        }
         parent.addChild(new ColorLiteral(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
     public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
         super.enterScalarLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (parent instanceof Operation && (((Operation) parent).lhs != null && ((Operation) parent).rhs != null)) {
+            this.currentContainer.pop();
+            parent = this.currentContainer.peek();
+        }
         parent.addChild(new ScalarLiteral(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
     public void enterBoolLiteral(ICSSParser.BoolLiteralContext ctx) {
         super.enterBoolLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (parent instanceof Operation && (((Operation) parent).lhs != null && ((Operation) parent).rhs != null)) {
+            this.currentContainer.pop();
+            parent = this.currentContainer.peek();
+        }
         parent.addChild(new BoolLiteral(ctx.getText()));
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -139,12 +167,15 @@ public class ASTListener extends ICSSBaseListener {
         super.enterVariableAssignment(ctx);
         VariableAssignment assignment = new VariableAssignment();
         ASTNode parent = this.currentContainer.peek();
-        if (parent instanceof VariableAssignment) {
+        while (parent instanceof VariableAssignment) {
             this.currentContainer.pop();
             parent = this.currentContainer.peek();
         }
         parent.addChild(assignment);
         this.currentContainer.push(assignment);
+//        if(ast.root.body != null) {
+//            System.out.println(ast.root.body);
+//        }
     }
 
     @Override
@@ -154,15 +185,22 @@ public class ASTListener extends ICSSBaseListener {
         AddOperation addOperation = new AddOperation();
         parent.addChild(addOperation);
         this.currentContainer.push(addOperation);
+        System.out.println(ast.root.body);
     }
 
     @Override
     public void enterSubtractOperation(ICSSParser.SubtractOperationContext ctx) {
         super.enterSubtractOperation(ctx);
         ASTNode parent = this.currentContainer.peek();
+
+//        while (parent instanceof Operation) {
+//            this.currentContainer.pop();
+//            parent = this.currentContainer.peek();
+//        }
         SubtractOperation subtractOperation = new SubtractOperation();
         parent.addChild(subtractOperation);
         this.currentContainer.push(subtractOperation);
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -172,6 +210,7 @@ public class ASTListener extends ICSSBaseListener {
         MultiplyOperation multiplyOperation = new MultiplyOperation();
         parent.addChild(multiplyOperation);
         this.currentContainer.push(multiplyOperation);
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -185,6 +224,7 @@ public class ASTListener extends ICSSBaseListener {
         IfClause ifClause = new IfClause();
         parent.addChild(ifClause);
         this.currentContainer.push(ifClause);
+        System.out.println(ast.root.body);
     }
 
     @Override
@@ -193,8 +233,11 @@ public class ASTListener extends ICSSBaseListener {
         VariableReference variableReference = new VariableReference(ctx.getText());
         ASTNode parent = this.currentContainer.peek();
         parent.addChild(variableReference);
+        System.out.println(ast.root.body);
     }
-    
+
+
+
     @Override
     public void exitVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
         super.exitVariableAssignment(ctx);
@@ -202,6 +245,7 @@ public class ASTListener extends ICSSBaseListener {
         if (parent instanceof VariableAssignment) {
             ((VariableAssignment) parent).name.setExpressionType(((VariableAssignment) parent).expression.getExpressionType());
         }
+        System.out.println(ast.root.body);
     }
 
 }

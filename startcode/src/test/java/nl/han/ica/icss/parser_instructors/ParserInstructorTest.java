@@ -232,8 +232,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("TR01-T1.icss")).toURI());
         final String astExpected = "[Stylesheet|[Stylerule|[TagSelector p|][Declaration|[Property: (width)|][Add|[Pixel literal (100)|][Multiply|[Scalar literal (40)|][Pixel literal (2)|]]]]]]";
-        final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
-                "p {\n" +
+        final String cssExpected = "p {\n" +
                 "  width: 180px;\n" +
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);
@@ -244,8 +243,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("TR01-T2.icss")).toURI());
         final String astExpected = "[Stylesheet|[VariableAssignment (BaseWidth)|[VariableReference (BaseWidth)|][Pixel literal (2)|]][Stylerule|[TagSelector p|][Declaration|[Property: (width)|][Add|[Pixel literal (100)|][VariableReference (BaseWidth)|]]]]]";
-        final String cssExpected = "/* Generated from ICSS, do not edit */\n" +
-                "\n" +
+        final String cssExpected = "\n" +
                 "p {\n" +
                 "  width: 102px;\n" +
                 "}\n";
@@ -257,8 +255,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("TR01-T3.icss")).toURI());
         final String astExpected = "[Stylesheet|[VariableAssignment (BaseWidth)|[VariableReference (BaseWidth)|][Pixel literal (2)|]][Stylerule|[TagSelector p|][VariableAssignment (BaseWidth)|[VariableReference (BaseWidth)|][Pixel literal (10)|]][Declaration|[Property: (width)|][Add|[Pixel literal (100)|][VariableReference (BaseWidth)|]]]][Stylerule|[TagSelector a|][Declaration|[Property: (width)|][VariableReference (BaseWidth)|]]]]";
-        final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
-                "p {\n" +
+        final String cssExpected = "p {\n" +
                 "  width: 110px;\n" +
                 "}\n" +
                 "a {\n" +
@@ -272,8 +269,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("PA04-T2.icss")).toURI());
         final String astExpected = "[Stylesheet|[VariableAssignment (AdjustColor)|[VariableReference (AdjustColor)|][Bool Literal (TRUE)|]][Stylerule|[TagSelector p|][Declaration|[Property: (background-color)|][Color literal (#ffffff)|]][Declaration|[Property: (width)|][Pixel literal (10)|]]][Stylerule|[IdSelector #menu|][Declaration|[Property: (width)|][Pixel literal (20)|]]][Stylerule|[ClassSelector .menu|][Declaration|[Property: (color)|][Color literal (#000000)|]][If_Clause|[VariableReference (AdjustColor)|][VariableAssignment (UseLinkColor)|[VariableReference (UseLinkColor)|][Bool Literal (TRUE)|]][If_Clause|[VariableReference (UseLinkColor)|][Declaration|[Property: (color)|][Color literal (#123123)|]]]]]]";
-        final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
-                "p {\n" +
+        final String cssExpected = "p {\n" +
                 "  background-color: #ffffff;\n" +
                 "  width: 10px;\n" +
                 "}\n" +
@@ -292,8 +288,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("GE01-T1.icss")).toURI());
         final String astExpected = "[Stylesheet|[Stylerule|[TagSelector p|][Declaration|[Property: (background-color)|][Color literal (#ffffff)|]][Declaration|[Property: (width)|][Pixel literal (10)|]]][Stylerule|[IdSelector #menu|][Declaration|[Property: (width)|][Pixel literal (100)|]]][Stylerule|[ClassSelector .menu|][Declaration|[Property: (color)|][Color literal (#000000)|]]]]";
-        final String cssExpected = "/* Generated from ICSS, do not edit */\n\n" +
-                "p {\n" +
+        final String cssExpected = "p {\n" +
                 "  background-color: #ffffff;\n" +
                 "  width: 10px;\n" +
                 "}\n" +

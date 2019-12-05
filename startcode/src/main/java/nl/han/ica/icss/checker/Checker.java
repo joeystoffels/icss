@@ -54,14 +54,26 @@ public class Checker {
 
     // CH02 && CH03
     private void checkOperation(Operation operation) {
+//        if (operation.lhs instanceof Literal && operation.rhs instanceof Literal) {
+
+        if (operation.lhs instanceof Operation) {
+            this.checkOperation((Operation) operation.lhs);
+        } else if (operation.rhs instanceof Operation) {
+            this.checkOperation((Operation) operation.rhs);
+        } else
         if (operation instanceof AddOperation || operation instanceof SubtractOperation &&
                 getExpressionTypeOfExpression(operation.lhs) != getExpressionTypeOfExpression(operation.rhs)) {
-            operation.setError("Operands are not matching for operation!");
+            operation.setError("Operands are not matching for operation!"); // TODO gaat fout in PA03-T1, recursive check doen? Want geneste meuk
         }
 
+//            if (operation instanceof MultiplyOperation &&
+//                    !(operation.lhs.getExpressionType() == SCALAR || operation.lhs.getExpressionType() == PIXEL) &&
+//                    !(operation.rhs.getExpressionType() == SCALAR || operation.lhs.getExpressionType() == PIXEL)) {
+//                operation.setError("Multiply operand consists of one or two non-scalar values!");
+//            }
+
         if (operation instanceof MultiplyOperation &&
-                operation.lhs.getExpressionType() != SCALAR &&
-                operation.rhs.getExpressionType() != SCALAR) {
+                operation.lhs.getExpressionType() != SCALAR && operation.rhs.getExpressionType() != SCALAR) {
             operation.setError("Multiply operand consists of one or two non-scalar values!");
         }
 
@@ -69,16 +81,23 @@ public class Checker {
                 getExpressionTypeOfExpression(operation.rhs) == COLOR) {
             operation.setError("Operation consists of one or more color values!");
         }
+//        }
     }
 
     // CH04
     private void checkDeclaration(Declaration declaration) {
+        if (declaration.expression instanceof Operation) {
+//            this.checkDeclaration(((Operation) declaration.expression).lhs );
+            return; // check in checkOperations?
+        }
+
         String propertyName = declaration.property.name;
         ExpressionType expressionType = getExpressionTypeOfExpression(declaration.expression);
 
         if (expressionType == PIXEL && (propertyName.equals("width") || propertyName.equals("height"))) return;
         if (expressionType == BOOL && (propertyName.equals("false") || propertyName.equals("true"))) return;
-        if (expressionType == COLOR && (propertyName.equals("color") || propertyName.equals("background-color"))) return;
+        if (expressionType == COLOR && (propertyName.equals("color") || propertyName.equals("background-color")))
+            return;
 
         // TODO fix? + percentage && scalar
 
@@ -94,6 +113,7 @@ public class Checker {
 
     // Also checks if undefined variable types are defined with a defined and returns that ExpressionType
     private ExpressionType getExpressionTypeOfExpression(Expression expression) {
+
         if (expression instanceof VariableReference && expression.getExpressionType() == UNDEFINED) {
 
             Optional<ASTNode> optional = nodes.stream().filter(x -> x instanceof VariableReference)

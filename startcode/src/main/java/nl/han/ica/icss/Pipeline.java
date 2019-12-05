@@ -91,6 +91,7 @@ public class Pipeline implements ANTLRErrorListener {
            (new Checker()).check(this.ast);
 
             ArrayList<SemanticError> errors = this.ast.getErrors();
+            System.out.println(errors);
             if (!errors.isEmpty()) {
                 for (SemanticError e : errors) {
                     this.errors.add(e.toString());
