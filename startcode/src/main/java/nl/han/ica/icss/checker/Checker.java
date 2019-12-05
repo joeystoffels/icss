@@ -54,28 +54,15 @@ public class Checker {
 
     // CH02 && CH03
     private void checkOperation(Operation operation) {
-//        if (operation.lhs instanceof Literal && operation.rhs instanceof Literal) {
-
-        if (operation.lhs instanceof Operation) {
-            this.checkOperation((Operation) operation.lhs);
-            return;
-        } else if (operation.rhs instanceof Operation) {
-            this.checkOperation((Operation) operation.rhs);
-            return;
-        } else if (operation instanceof AddOperation || operation instanceof SubtractOperation) {
+        if (operation instanceof AddOperation || operation instanceof SubtractOperation) {
             ExpressionType lhsExpressionType = getExpressionTypeOfExpression(operation.lhs);
-            ExpressionType rhsExpressionTypes = getExpressionTypeOfExpression(operation.rhs);
+            ExpressionType rhsExpressionType = getExpressionTypeOfExpression(operation.rhs);
 
-            if (!((lhsExpressionType == SCALAR || lhsExpressionType == PIXEL) && (lhsExpressionType == PIXEL || rhsExpressionTypes == SCALAR))) {
-                operation.setError("Operands are not matching for operation! : " + operation);
+            if (lhsExpressionType != rhsExpressionType) {
+                operation.setError("Operands are not matching for operation! : " + operation + " -> " +
+                        lhsExpressionType + " " + rhsExpressionType);
             }
         }
-
-//            if (operation instanceof MultiplyOperation &&
-//                    !(operation.lhs.getExpressionType() == SCALAR || operation.lhs.getExpressionType() == PIXEL) &&
-//                    !(operation.rhs.getExpressionType() == SCALAR || operation.lhs.getExpressionType() == PIXEL)) {
-//                operation.setError("Multiply operand consists of one or two non-scalar values!");
-//            }
 
         if (operation instanceof MultiplyOperation &&
                 operation.lhs.getExpressionType() != SCALAR && operation.rhs.getExpressionType() != SCALAR) {
@@ -86,13 +73,11 @@ public class Checker {
                 getExpressionTypeOfExpression(operation.rhs) == COLOR) {
             operation.setError("Operation consists of one or more color values!");
         }
-//        }
     }
 
     // CH04
     private void checkDeclaration(Declaration declaration) {
         if (declaration.expression instanceof Operation) {
-//            this.checkDeclaration(((Operation) declaration.expression).lhs );
             return; // check in checkOperations?
         }
 
@@ -103,8 +88,6 @@ public class Checker {
         if (expressionType == BOOL && (propertyName.equals("false") || propertyName.equals("true"))) return;
         if (expressionType == COLOR && (propertyName.equals("color") || propertyName.equals("background-color")))
             return;
-
-        // TODO fix? + percentage && scalar
 
         declaration.setError("Type of value does not match with property!");
     }
@@ -130,6 +113,36 @@ public class Checker {
             }
         }
 
+        if (expression instanceof Operation) {
+            return getExpressionTypeOfOperation((Operation) expression);
+        }
+
         return expression.getExpressionType();
+    }
+
+    private ExpressionType getExpressionTypeOfOperation(Operation operation) {
+        if (operation.lhs instanceof Operation) {
+            return this.getExpressionTypeOfOperation((Operation) operation.lhs);
+        }
+
+        if (operation.rhs instanceof Operation) {
+            return this.getExpressionTypeOfOperation((Operation) operation.rhs);
+        }
+
+        if (operation instanceof MultiplyOperation) {
+            if (getExpressionTypeOfExpression(operation.lhs) == SCALAR) {
+                return getExpressionTypeOfExpression(operation.rhs);
+            } else {
+                return getExpressionTypeOfExpression(operation.lhs);
+            }
+        }
+
+        if (operation instanceof AddOperation || operation instanceof SubtractOperation) {
+            return operation.lhs.getExpressionType() ==
+                    operation.rhs.getExpressionType() ?
+                    operation.lhs.getExpressionType() : UNDEFINED;
+        }
+
+        return UNDEFINED;
     }
 }

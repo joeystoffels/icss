@@ -73,7 +73,6 @@ multiplyOperation: MUL;
 subtractOperation: MIN;
 addOperation: PLUS;
 
-
 // Literal
 literal: pixelLiteral | percentageLiteral | colorLiteral | scalarLiteral | boolLiteral | variableReference;
 pixelLiteral: PIXELSIZE;

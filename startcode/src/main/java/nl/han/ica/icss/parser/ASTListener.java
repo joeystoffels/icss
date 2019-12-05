@@ -20,8 +20,8 @@ import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
+import nl.han.ica.icss.ast.types.ExpressionType;
 
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -270,6 +270,27 @@ public class ASTListener extends ICSSBaseListener {
         ASTNode parent = this.currentContainer.peek();
         if (parent instanceof VariableAssignment) {
             ((VariableAssignment) parent).name.setExpressionType(((VariableAssignment) parent).expression.getExpressionType());
+        }
+
+        if (parent instanceof Operation) {
+            ExpressionType type = ExpressionType.UNDEFINED;
+            if (parent instanceof AddOperation || parent instanceof SubtractOperation) {
+                type = ((Operation) parent).lhs.getExpressionType();
+            }
+            if (parent instanceof MultiplyOperation) {
+                if (((MultiplyOperation) parent).lhs.getExpressionType() == ExpressionType.SCALAR) {
+                    type = ((MultiplyOperation) parent).rhs.getExpressionType();
+                } else {
+                    type = ((MultiplyOperation) parent).lhs.getExpressionType();
+                }
+            }
+
+            while (!(parent instanceof VariableAssignment)) {
+                this.currentContainer.pop();
+                parent = this.currentContainer.peek();
+            }
+            ((VariableAssignment) parent).name.setExpressionType(type);
+
         }
         System.out.println(ast.root.body);
     }
