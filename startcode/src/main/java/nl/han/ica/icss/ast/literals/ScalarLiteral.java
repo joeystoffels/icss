@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class ScalarLiteral extends Literal {
 
-    private int value;
+    public int value;
 
     public ScalarLiteral(int value) {
         this.value = value;
@@ -33,7 +33,7 @@ public class ScalarLiteral extends Literal {
 
     @Override
     public String getCssString() {
-        return Integer.toString(value);
+        return value + ";";
     }
 
     @Override

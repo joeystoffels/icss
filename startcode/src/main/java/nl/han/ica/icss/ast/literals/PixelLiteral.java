@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class PixelLiteral extends Literal {
 
-    private int value;
+    public int value;
 
     public PixelLiteral(int value) {
         this.value = value;
@@ -23,7 +23,12 @@ public class PixelLiteral extends Literal {
 
     @Override
     public String getValue() {
-        return this.value + "px";
+        return String.valueOf(this.value);
+    }
+
+    @Override
+    public String getCssString() {
+        return this.value + "px;";
     }
 
     @Override
