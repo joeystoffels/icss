@@ -51,28 +51,28 @@ classSelector: CLASS_IDENT;
 idSelector: ID_IDENT;
 tagSelector: LOWER_IDENT;
 
+
 // Declaration
 declaration: propertyName COLON expression SEMICOLON;
-expression: operation | literal | ifClause | variableAssignment;
+expression:
+    expression multiplyOperation expression |
+    expression addOperation expression |
+    expression subtractOperation expression |
+    literal | variableAssignment;
 propertyName: LOWER_IDENT;
 
 // Variable
 variableAssignment: variableReference ASSIGNMENT_OPERATOR expression SEMICOLON;
 variableReference: CAPITAL_IDENT;
 
-// Operation
-operation: addOperation | subtractOperation | multiplyOperation;
-multiplyOperation: multiplyOperation MUL literal | literal MUL literal | literal MUL operation;
-subtractOperation: subtractOperation MIN literal | literal MIN operation | addOperation MIN literal;
-addOperation: addOperation PLUS literal | literal PLUS operation;
-
-//                | (subtractOperation | multiplyOperation) PLUS literal
-//                | literal PLUS literal
-//                | literal PLUS operation
-//                | addOperation PLUS operation;
-
 // If clause
 ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE stylerulecontent;
+
+// Operation
+multiplyOperation: MUL;
+subtractOperation: MIN;
+addOperation: PLUS;
+
 
 // Literal
 literal: pixelLiteral | percentageLiteral | colorLiteral | scalarLiteral | boolLiteral | variableReference;

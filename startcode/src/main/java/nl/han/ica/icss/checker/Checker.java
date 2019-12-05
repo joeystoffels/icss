@@ -41,7 +41,7 @@ public class Checker {
     private void run(ASTNode node) {
         if (node instanceof VariableReference) this.checkVariable((VariableReference) node);
         if (node instanceof Operation) this.checkOperation((Operation) node);
-        if (node instanceof IfClause) this.checkIfClause((IfClause) node);
+//        if (node instanceof IfClause) this.checkIfClause((IfClause) node);
         if (node instanceof Declaration) this.checkDeclaration((Declaration) node);
     }
 
@@ -58,12 +58,17 @@ public class Checker {
 
         if (operation.lhs instanceof Operation) {
             this.checkOperation((Operation) operation.lhs);
+            return;
         } else if (operation.rhs instanceof Operation) {
             this.checkOperation((Operation) operation.rhs);
-        } else
-        if (operation instanceof AddOperation || operation instanceof SubtractOperation &&
-                getExpressionTypeOfExpression(operation.lhs) != getExpressionTypeOfExpression(operation.rhs)) {
-            operation.setError("Operands are not matching for operation!"); // TODO gaat fout in PA03-T1, recursive check doen? Want geneste meuk
+            return;
+        } else if (operation instanceof AddOperation || operation instanceof SubtractOperation) {
+            ExpressionType lhsExpressionType = getExpressionTypeOfExpression(operation.lhs);
+            ExpressionType rhsExpressionTypes = getExpressionTypeOfExpression(operation.rhs);
+
+            if (!((lhsExpressionType == SCALAR || lhsExpressionType == PIXEL) && (lhsExpressionType == PIXEL || rhsExpressionTypes == SCALAR))) {
+                operation.setError("Operands are not matching for operation! : " + operation);
+            }
         }
 
 //            if (operation instanceof MultiplyOperation &&
