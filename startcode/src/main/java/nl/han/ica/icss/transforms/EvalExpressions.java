@@ -6,7 +6,6 @@ import nl.han.ica.icss.ast.Declaration;
 import nl.han.ica.icss.ast.Expression;
 import nl.han.ica.icss.ast.Literal;
 import nl.han.ica.icss.ast.Operation;
-import nl.han.ica.icss.ast.VariableAssignment;
 import nl.han.ica.icss.ast.VariableReference;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.operations.AddOperation;
@@ -38,16 +37,12 @@ public class EvalExpressions implements Transform {
     }
 
     private void replaceVariableReferences(ASTNode node) {
-        if (node instanceof VariableReference) {
-            System.out.println(node + " " + ((VariableReference) node).value + " " + ((VariableReference) node).name);
-
-            if (((VariableReference) node).value == null) {
-                Optional<ASTNode> variableReference = getVariable((VariableReference) node);
-                if (variableReference.isPresent() && variableReference.get() instanceof VariableReference) {
-                    ((VariableReference) node).value = ((VariableReference) variableReference.get()).value;
-                    if (((VariableReference) variableReference.get()).getExpressionType() == PIXEL) {
-                        ((VariableReference) node).value = ((VariableReference) node).value + "px";
-                    }
+        if (node instanceof VariableReference && ((VariableReference) node).value == null) {
+            Optional<ASTNode> variableReference = getVariable((VariableReference) node);
+            if (variableReference.isPresent() && variableReference.get() instanceof VariableReference) {
+                ((VariableReference) node).value = ((VariableReference) variableReference.get()).value;
+                if (((VariableReference) variableReference.get()).getExpressionType() == PIXEL) {
+                    ((VariableReference) node).value = ((VariableReference) node).value + "px";
                 }
             }
         }
@@ -59,9 +54,6 @@ public class EvalExpressions implements Transform {
             nodes.remove(node);
             nodes.remove((((Declaration) node).expression));
             ((Declaration) node).expression = literal;
-        }
-        if (node instanceof VariableAssignment) {
-            System.out.println(node);
         }
     }
 
