@@ -12,10 +12,8 @@ import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import static nl.han.ica.icss.ast.types.ExpressionType.PIXEL;
 import static nl.han.ica.icss.ast.types.ExpressionType.UNDEFINED;

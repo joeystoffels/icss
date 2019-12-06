@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class IfClause extends ASTNode {
 
-
     public Expression conditionalExpression;
     public ArrayList<ASTNode> body = new ArrayList<>();
     public ArrayList<ASTNode> elseBody = new ArrayList<>();
@@ -25,6 +24,7 @@ public class IfClause extends ASTNode {
     public String getNodeLabel() {
         return "If_Clause";
     }
+
     @Override
     public ArrayList<ASTNode> getChildren() {
         ArrayList<ASTNode> children = new ArrayList<>();
@@ -36,13 +36,15 @@ public class IfClause extends ASTNode {
 
     @Override
     public ASTNode addChild(ASTNode child) {
-        if(child instanceof Expression)
-            conditionalExpression  = (Expression) child;
-        else
+        if (child instanceof Expression) {
+            conditionalExpression = (Expression) child;
+        } else {
             body.add(child);
+        }
 
         return this;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

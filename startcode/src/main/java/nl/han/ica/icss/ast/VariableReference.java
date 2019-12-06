@@ -7,9 +7,7 @@ import java.util.Objects;
 public class VariableReference extends Expression {
 
     public String name;
-
     public String value;
-
     private ExpressionType expressionType = ExpressionType.UNDEFINED;
 
     public VariableReference(String name) {

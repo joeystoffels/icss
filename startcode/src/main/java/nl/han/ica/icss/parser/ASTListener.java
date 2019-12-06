@@ -14,7 +14,6 @@ import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
-import javax.swing.text.Style;
 import java.util.Stack;
 
 /**

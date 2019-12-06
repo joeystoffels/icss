@@ -29,7 +29,6 @@ public class ElseClause extends ASTNode {
     @Override
     public ASTNode addChild(ASTNode child) {
         body.add(child);
-
         return this;
     }
 

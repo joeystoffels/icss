@@ -20,9 +20,9 @@ public class Declaration extends ASTNode {
     }
 
     @Override
-	public String getCssString() {
-    	return "\n  ";
-	}
+    public String getCssString() {
+        return "\n  ";
+    }
 
     @Override
     public String getNodeLabel() {

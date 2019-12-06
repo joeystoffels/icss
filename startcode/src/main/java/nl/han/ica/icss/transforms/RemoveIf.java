@@ -54,7 +54,6 @@ public class RemoveIf implements Transform {
                     handleTrueIfClauseBody(ifClause);
                 }
             }
-
         }
     }
 
