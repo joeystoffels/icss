@@ -3,14 +3,21 @@ package nl.han.ica.icss.transforms;
 import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.Declaration;
+import nl.han.ica.icss.ast.Expression;
 import nl.han.ica.icss.ast.Literal;
 import nl.han.ica.icss.ast.Operation;
+import nl.han.ica.icss.ast.VariableAssignment;
+import nl.han.ica.icss.ast.VariableReference;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+
+import static nl.han.ica.icss.ast.types.ExpressionType.UNDEFINED;
 
 public class EvalExpressions implements Transform {
 
@@ -22,6 +29,7 @@ public class EvalExpressions implements Transform {
         this.ast = ast;
         setNodes(ast.root);
         nodes.forEach(this::replaceOperation);
+        ast.root.body.removeAll(nodes.stream().filter(x -> x instanceof VariableAssignment).collect(Collectors.toList()));
     }
 
     private void setNodes(ASTNode node) {
@@ -36,7 +44,6 @@ public class EvalExpressions implements Transform {
             Literal literal = new PixelLiteral(evalExpressions((Operation) ((Declaration) node).expression));
             System.out.println(nodes.remove(node));
             System.out.println(nodes.remove((((Declaration) node).expression)));
-            System.out.println(literal);
 
             ((Declaration) node).expression = literal;
         } else {
@@ -53,12 +60,16 @@ public class EvalExpressions implements Transform {
 
         if (operation.rhs instanceof Operation) {
             rhsValue = this.evalExpressions((Operation) operation.rhs);
+        } else if (operation.rhs instanceof VariableReference) {
+            rhsValue = Integer.parseInt(getValueOfVariableReference(operation.rhs));
         } else {
             rhsValue = Integer.parseInt(operation.rhs.getValue());
         }
 
         if (operation.lhs instanceof Operation) {
             lhsValue = this.evalExpressions((Operation) operation.lhs);
+        } else if (operation.lhs instanceof VariableReference) {
+            lhsValue = Integer.parseInt(getValueOfVariableReference(operation.lhs));
         } else {
             lhsValue = Integer.parseInt(operation.lhs.getValue());
         }
@@ -77,4 +88,20 @@ public class EvalExpressions implements Transform {
 
         return 0;
     }
+
+    private String getValueOfVariableReference(Expression expression) {
+        if (expression instanceof VariableReference && expression.getExpressionType() == UNDEFINED) {
+
+            Optional<ASTNode> optional = nodes.stream().filter(x -> x instanceof VariableReference)
+                    .filter(y -> (((VariableReference) y).name.equals(((VariableReference) expression).name) &&
+                            ((VariableReference) y).getExpressionType() != UNDEFINED)).findFirst();
+
+            if (optional.isPresent() && optional.get() instanceof VariableReference) {
+                return ((VariableReference) optional.get()).getValue();
+            }
+        }
+        return null;
+    }
+
+
 }

@@ -243,8 +243,7 @@ class ParserInstructorTest {
         final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
                 .getResource("TR01-T2.icss")).toURI());
         final String astExpected = "[Stylesheet|[VariableAssignment (BaseWidth)|[VariableReference (BaseWidth)|][Pixel literal (2)|]][Stylerule|[TagSelector p|][Declaration|[Property: (width)|][Add|[Pixel literal (100)|][VariableReference (BaseWidth)|]]]]]";
-        final String cssExpected = "\n" +
-                "p {\n" +
+        final String cssExpected = "p {\n" +
                 "  width: 102px;\n" +
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);

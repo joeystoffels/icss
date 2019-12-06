@@ -8,11 +8,13 @@ public class VariableReference extends Expression {
 
 	public String name;
 
+	public String value;
+
 	private ExpressionType expressionType = ExpressionType.UNDEFINED;
 
 	@Override
 	public String getValue() {
-		return null;
+		return value;
 	}
 
 	public VariableReference(String name) {

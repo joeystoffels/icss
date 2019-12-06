@@ -101,7 +101,6 @@ public class Checker {
 
     // Also checks if undefined variable types are defined with a defined and returns that ExpressionType
     private ExpressionType getExpressionTypeOfExpression(Expression expression) {
-
         if (expression instanceof VariableReference && expression.getExpressionType() == UNDEFINED) {
 
             Optional<ASTNode> optional = nodes.stream().filter(x -> x instanceof VariableReference)
