@@ -3,6 +3,7 @@ package nl.han.ica.icss.generator;
 import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.Stylerule;
+import nl.han.ica.icss.ast.VariableAssignment;
 
 public class Generator {
 
@@ -14,6 +15,10 @@ public class Generator {
     }
 
     private void printNodes(ASTNode node) {
+        if (node instanceof VariableAssignment) {
+            return;
+        }
+
         cssString.append(node.getCssString());
 
         if (node instanceof Stylerule) {
