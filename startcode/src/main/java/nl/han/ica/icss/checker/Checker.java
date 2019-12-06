@@ -41,7 +41,7 @@ public class Checker {
     private void run(ASTNode node) {
         if (node instanceof VariableReference) this.checkVariable((VariableReference) node);
         if (node instanceof Operation) this.checkOperation((Operation) node);
-//        if (node instanceof IfClause) this.checkIfClause((IfClause) node);
+        if (node instanceof IfClause) this.checkIfClause((IfClause) node);
         if (node instanceof Declaration) this.checkDeclaration((Declaration) node);
     }
 
@@ -78,7 +78,7 @@ public class Checker {
     // CH04
     private void checkDeclaration(Declaration declaration) {
         if (declaration.expression instanceof Operation) {
-            return; // check in checkOperations?
+            return;
         }
 
         String propertyName = declaration.property.name;
@@ -94,12 +94,12 @@ public class Checker {
 
     // CH05
     private void checkIfClause(IfClause ifClause) {
-        if (ifClause.getConditionalExpression().getExpressionType() != BOOL) {
+        if (getExpressionTypeOfExpression(ifClause.conditionalExpression) != BOOL) {
             ifClause.setError("IfClause is not of type boolean!");
         }
     }
 
-    // Also checks if undefined variable types are defined with a defined and returns that ExpressionType
+    // Checks (recursively) for undefined variables and operations if they are defined and then returns its ExpressionType.
     private ExpressionType getExpressionTypeOfExpression(Expression expression) {
         if (expression instanceof VariableReference && expression.getExpressionType() == UNDEFINED) {
 
@@ -134,14 +134,10 @@ public class Checker {
             } else {
                 return getExpressionTypeOfExpression(operation.lhs);
             }
-        }
-
-        if (operation instanceof AddOperation || operation instanceof SubtractOperation) {
+        } else {
             return operation.lhs.getExpressionType() ==
                     operation.rhs.getExpressionType() ?
                     operation.lhs.getExpressionType() : UNDEFINED;
         }
-
-        return UNDEFINED;
     }
 }

@@ -22,11 +22,9 @@ import static nl.han.ica.icss.ast.types.ExpressionType.UNDEFINED;
 public class EvalExpressions implements Transform {
 
     private CopyOnWriteArrayList<ASTNode> nodes = new CopyOnWriteArrayList<>();
-    private AST ast;
 
     @Override
     public void apply(AST ast) {
-        this.ast = ast;
         setNodes(ast.root);
         nodes.forEach(this::replaceOperation);
         ast.root.body.removeAll(nodes.stream().filter(x -> x instanceof VariableAssignment).collect(Collectors.toList()));
@@ -42,19 +40,13 @@ public class EvalExpressions implements Transform {
     private void replaceOperation(ASTNode node) {
         if (node instanceof Declaration && ((Declaration) node).expression instanceof Operation) {
             Literal literal = new PixelLiteral(evalExpressions((Operation) ((Declaration) node).expression));
-            System.out.println(nodes.remove(node));
-            System.out.println(nodes.remove((((Declaration) node).expression)));
-
+            nodes.remove(node);
+            nodes.remove((((Declaration) node).expression));
             ((Declaration) node).expression = literal;
-        } else {
-            return;
         }
-        System.out.println(ast.root.body);
-        System.out.println(nodes);
     }
 
     private int evalExpressions(Operation operation) {
-
         int lhsValue;
         int rhsValue;
 
@@ -74,17 +66,9 @@ public class EvalExpressions implements Transform {
             lhsValue = Integer.parseInt(operation.lhs.getValue());
         }
 
-        if (operation instanceof AddOperation) {
-            return lhsValue + rhsValue;
-        }
-
-        if (operation instanceof SubtractOperation) {
-            return lhsValue - rhsValue;
-        }
-
-        if (operation instanceof MultiplyOperation) {
-            return lhsValue * rhsValue;
-        }
+        if (operation instanceof AddOperation) return lhsValue + rhsValue;
+        if (operation instanceof SubtractOperation) return lhsValue - rhsValue;
+        if (operation instanceof MultiplyOperation) return lhsValue * rhsValue;
 
         return 0;
     }
