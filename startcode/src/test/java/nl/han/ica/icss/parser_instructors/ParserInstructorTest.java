@@ -299,4 +299,26 @@ class ParserInstructorTest {
                 "}\n";
         parseCheckTransformGenerate(path, astExpected, cssExpected);
     }
+
+    @Test
+    void testEX01_T1() throws IOException, URISyntaxException {
+        final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
+                .getResource("EX01-T1.icss")).toURI());
+        final String astExpected = "[Stylesheet|[VariableAssignment (AdjustColor)|[VariableReference (AdjustColor)|][Bool Literal (FALSE)|]][Stylerule|[ClassSelector .menu|][If_Clause|[VariableReference (AdjustColor)|][Declaration|[Property: (width)|][Pixel literal (20)|]][Else_Clause|[Declaration|[Property: (width)|][Pixel literal (50)|]]]]]]";
+        final String cssExpected = ".menu {\n" +
+                "  width: 50px;\n" +
+                "}\n";
+        parseCheckTransformGenerate(path, astExpected, cssExpected);
+    }
+
+    @Test
+    void testEX01_T2() throws IOException, URISyntaxException {
+        final Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader()
+                .getResource("EX01-T2.icss")).toURI());
+        final String astExpected = "[Stylesheet|[VariableAssignment (AdjustColor)|[VariableReference (AdjustColor)|][Bool Literal (TRUE)|]][Stylerule|[ClassSelector .menu|][If_Clause|[VariableReference (AdjustColor)|][Declaration|[Property: (width)|][Pixel literal (20)|]][Else_Clause|[Declaration|[Property: (width)|][Pixel literal (50)|]]]]]]";
+        final String cssExpected = ".menu {\n" +
+                "  width: 20px;\n" +
+                "}\n";
+        parseCheckTransformGenerate(path, astExpected, cssExpected);
+    }
 }
