@@ -1,14 +1,6 @@
 package nl.han.ica.icss.parser;
 
-import nl.han.ica.icss.ast.AST;
-import nl.han.ica.icss.ast.ASTNode;
-import nl.han.ica.icss.ast.Declaration;
-import nl.han.ica.icss.ast.IfClause;
-import nl.han.ica.icss.ast.Operation;
-import nl.han.ica.icss.ast.PropertyName;
-import nl.han.ica.icss.ast.Stylerule;
-import nl.han.ica.icss.ast.VariableAssignment;
-import nl.han.ica.icss.ast.VariableReference;
+import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
@@ -22,6 +14,7 @@ import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
+import javax.swing.text.Style;
 import java.util.Stack;
 
 /**
@@ -175,6 +168,17 @@ public class ASTListener extends ICSSBaseListener {
             parent = popAndPeek();
         }
         addChildToParentAndPush(new IfClause());
+    }
+
+
+    @Override
+    public void enterElseClause(ICSSParser.ElseClauseContext ctx) {
+        super.enterElseClause(ctx);
+        ASTNode parent = this.currentContainer.peek();
+        while (!(parent instanceof IfClause)) {
+            parent = popAndPeek();
+        }
+        addChildToParentAndPush(new ElseClause());
     }
 
     @Override

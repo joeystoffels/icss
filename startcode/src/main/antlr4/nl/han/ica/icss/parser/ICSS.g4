@@ -1,8 +1,9 @@
 grammar ICSS;
 
 //--- LEXER: ---
-// IF support:
+// IF/ELSE support:
 IF: 'if';
+ELSE: 'else';
 BOX_BRACKET_OPEN: '[';
 BOX_BRACKET_CLOSE: ']';
 
@@ -43,10 +44,10 @@ ASSIGNMENT_OPERATOR: ':=';
 // Style
 stylesheet: variableAssignment* stylerule* EOF;
 stylerule: selector stylerulecontent;
-stylerulecontent: OPEN_BRACE (declaration | ifClause | variableAssignment)* CLOSE_BRACE;
+stylerulecontent: OPEN_BRACE (declaration | ifClause | (ifClause elseClause) | variableAssignment)* CLOSE_BRACE;
 
 // Selector
-selector: classSelector | idSelector | tagSelector ;
+selector: classSelector | idSelector | tagSelector;
 classSelector: CLASS_IDENT;
 idSelector: ID_IDENT;
 tagSelector: LOWER_IDENT;
@@ -67,6 +68,7 @@ variableReference: CAPITAL_IDENT;
 
 // If clause
 ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE stylerulecontent;
+elseClause: ELSE stylerulecontent;
 
 // Operation
 multiplyOperation: MUL;

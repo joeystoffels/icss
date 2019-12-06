@@ -1,0 +1,9 @@
+AdjustColor := TRUE;
+
+.menu {
+	if[AdjustColor] {
+        width: 20px;
+    } else {
+        width: 50px;
+    }
+}

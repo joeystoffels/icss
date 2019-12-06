@@ -10,6 +10,7 @@ public class IfClause extends ASTNode {
 
     public Expression conditionalExpression;
     public ArrayList<ASTNode> body = new ArrayList<>();
+    public ArrayList<ASTNode> elseBody = new ArrayList<>();
 
     public IfClause() {
         this.conditionalExpression = new BoolLiteral("FALSE");
