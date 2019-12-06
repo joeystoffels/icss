@@ -24,7 +24,12 @@ public class ColorLiteral extends Literal {
 
     @Override
     public String getValue() {
-        return String.valueOf(this.value);
+        return this.value;
+    }
+
+    @Override
+    public String getCssString() {
+        return this.value + ";";
     }
 
     @Override

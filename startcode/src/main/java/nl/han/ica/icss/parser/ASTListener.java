@@ -1,13 +1,6 @@
 package nl.han.ica.icss.parser;
 
-import nl.han.ica.icss.ast.AST;
-import nl.han.ica.icss.ast.ASTNode;
-import nl.han.ica.icss.ast.Declaration;
-import nl.han.ica.icss.ast.IfClause;
-import nl.han.ica.icss.ast.PropertyName;
-import nl.han.ica.icss.ast.Stylerule;
-import nl.han.ica.icss.ast.VariableAssignment;
-import nl.han.ica.icss.ast.VariableReference;
+import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
@@ -21,10 +14,7 @@ import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * This class extracts the ICSS Abstract Syntax Tree from the Antlr Parse tree.
@@ -46,70 +36,69 @@ public class ASTListener extends ICSSBaseListener {
         this.currentContainer.push(this.ast.root);
     }
 
-    private void add(ASTNode node) {
-        this.currentContainer.push(node);
-        this.ast.root.addChild(node);
-    }
-
     @Override
     public void enterStylerule(ICSSParser.StyleruleContext ctx) {
         super.enterStylerule(ctx);
         Stylerule stylerule = new Stylerule();
-        this.add(stylerule);
+        this.currentContainer.push(stylerule);
+        this.ast.root.addChild(stylerule);
     }
 
     @Override
     public void enterClassSelector(ICSSParser.ClassSelectorContext ctx) {
         super.enterClassSelector(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new ClassSelector(ctx.getText()));
+        addChildToParent(new ClassSelector(ctx.getText()));
     }
 
     @Override
     public void enterIdSelector(ICSSParser.IdSelectorContext ctx) {
         super.enterIdSelector(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new IdSelector(ctx.getText()));
+        addChildToParent(new IdSelector(ctx.getText()));
     }
 
     @Override
     public void enterTagSelector(ICSSParser.TagSelectorContext ctx) {
         super.enterTagSelector(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new TagSelector(ctx.getText()));
+        addChildToParent(new TagSelector(ctx.getText()));
     }
 
     @Override
     public void enterDeclaration(ICSSParser.DeclarationContext ctx) {
         super.enterDeclaration(ctx);
-        Declaration declaration = new Declaration();
         ASTNode parent = this.currentContainer.peek();
-        if (parent instanceof Declaration) {
-            this.currentContainer.pop();
-            parent = this.currentContainer.peek();
+        while (parent instanceof Declaration || parent instanceof VariableAssignment) {
+            parent = popAndPeek();
         }
-        parent.addChild(declaration);
-        this.currentContainer.push(declaration);
+        addChildToParentAndPush(new Declaration());
     }
 
     @Override
     public void enterPropertyName(ICSSParser.PropertyNameContext ctx) {
         super.enterPropertyName(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        parent.addChild(new PropertyName(ctx.getText()));
+        addChildToParent(new PropertyName(ctx.getText()));
     }
 
     @Override
     public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
         super.enterPixelLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (isNodeOfTypeOperationAndComplete(parent)) {
+            parent = popAndPeek();
+        }
         parent.addChild(new PixelLiteral(ctx.getText()));
+    }
+
+    private boolean isNodeOfTypeOperationAndComplete(ASTNode node) {
+        return node instanceof Operation && (((Operation) node).lhs != null && ((Operation) node).rhs != null);
     }
 
     @Override
     public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
         super.enterPercentageLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (isNodeOfTypeOperationAndComplete(parent)) {
+            parent = popAndPeek();
+        }
         parent.addChild(new PercentageLiteral(ctx.getText()));
     }
 
@@ -117,6 +106,9 @@ public class ASTListener extends ICSSBaseListener {
     public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
         super.enterColorLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (isNodeOfTypeOperationAndComplete(parent)) {
+            parent = popAndPeek();
+        }
         parent.addChild(new ColorLiteral(ctx.getText()));
     }
 
@@ -124,6 +116,9 @@ public class ASTListener extends ICSSBaseListener {
     public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
         super.enterScalarLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (isNodeOfTypeOperationAndComplete(parent)) {
+            parent = popAndPeek();
+        }
         parent.addChild(new ScalarLiteral(ctx.getText()));
     }
 
@@ -131,77 +126,109 @@ public class ASTListener extends ICSSBaseListener {
     public void enterBoolLiteral(ICSSParser.BoolLiteralContext ctx) {
         super.enterBoolLiteral(ctx);
         ASTNode parent = this.currentContainer.peek();
+        while (isNodeOfTypeOperationAndComplete(parent)) {
+            parent = popAndPeek();
+        }
         parent.addChild(new BoolLiteral(ctx.getText()));
     }
 
     @Override
     public void enterVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
         super.enterVariableAssignment(ctx);
-        VariableAssignment assignment = new VariableAssignment();
         ASTNode parent = this.currentContainer.peek();
-        if (parent instanceof VariableAssignment) {
-            this.currentContainer.pop();
-            parent = this.currentContainer.peek();
+        while (parent instanceof VariableAssignment) {
+            parent = popAndPeek();
         }
-        parent.addChild(assignment);
-        this.currentContainer.push(assignment);
+        addChildToParentAndPush(new VariableAssignment());
     }
 
     @Override
-    public void enterAddOperation(ICSSParser.AddOperationContext ctx) {
-        super.enterAddOperation(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        AddOperation addOperation = new AddOperation();
-        parent.addChild(addOperation);
-        this.currentContainer.push(addOperation);
-    }
+    public void enterExpression(ICSSParser.ExpressionContext ctx) {
+        super.enterExpression(ctx);
 
-    @Override
-    public void enterSubtractOperation(ICSSParser.SubtractOperationContext ctx) {
-        super.enterSubtractOperation(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        SubtractOperation subtractOperation = new SubtractOperation();
-        parent.addChild(subtractOperation);
-        this.currentContainer.push(subtractOperation);
-    }
-
-    @Override
-    public void enterMultiplyOperation(ICSSParser.MultiplyOperationContext ctx) {
-        super.enterMultiplyOperation(ctx);
-        ASTNode parent = this.currentContainer.peek();
-        MultiplyOperation multiplyOperation = new MultiplyOperation();
-        parent.addChild(multiplyOperation);
-        this.currentContainer.push(multiplyOperation);
+        ctx.children.forEach(x -> {
+            if (x instanceof ICSSParser.AddOperationContext) {
+                addChildToParentAndPush(new AddOperation());
+            }
+            if (x instanceof ICSSParser.SubtractOperationContext) {
+                addChildToParentAndPush(new SubtractOperation());
+            }
+            if (x instanceof ICSSParser.MultiplyOperationContext) {
+                addChildToParentAndPush(new MultiplyOperation());
+            }
+        });
     }
 
     @Override
     public void enterIfClause(ICSSParser.IfClauseContext ctx) {
         super.enterIfClause(ctx);
         ASTNode parent = this.currentContainer.peek();
-        if (parent instanceof Declaration) {
-            this.currentContainer.pop();
-            parent = this.currentContainer.peek();
+        while (!(parent instanceof Stylerule) && !(parent instanceof IfClause)) {
+            parent = popAndPeek();
         }
-        IfClause ifClause = new IfClause();
-        parent.addChild(ifClause);
-        this.currentContainer.push(ifClause);
+        addChildToParentAndPush(new IfClause());
+    }
+
+
+    @Override
+    public void enterElseClause(ICSSParser.ElseClauseContext ctx) {
+        super.enterElseClause(ctx);
+        ASTNode parent = this.currentContainer.peek();
+        while (!(parent instanceof IfClause)) {
+            parent = popAndPeek();
+        }
+        addChildToParentAndPush(new ElseClause());
     }
 
     @Override
     public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) {
         super.enterVariableReference(ctx);
-        VariableReference variableReference = new VariableReference(ctx.getText());
-        ASTNode parent = this.currentContainer.peek();
-        parent.addChild(variableReference);
+        addChildToParent(new VariableReference(ctx.getText()));
     }
-    
+
     @Override
     public void exitVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
         super.exitVariableAssignment(ctx);
         ASTNode parent = this.currentContainer.peek();
         if (parent instanceof VariableAssignment) {
-            ((VariableAssignment) parent).name.setExpressionType(((VariableAssignment) parent).expression.getExpressionType());
+            VariableAssignment variableAssignment = (VariableAssignment) parent;
+            variableAssignment.name.setExpressionType(variableAssignment.expression.getExpressionType());
+            variableAssignment.name.value = variableAssignment.expression.getValue();
         }
+
+        if (parent instanceof Operation) {
+            ExpressionType type = ExpressionType.UNDEFINED;
+            if (parent instanceof AddOperation || parent instanceof SubtractOperation) {
+                type = ((Operation) parent).lhs.getExpressionType();
+            }
+            if (parent instanceof MultiplyOperation) {
+                MultiplyOperation operation = (MultiplyOperation) parent;
+                if (operation.lhs.getExpressionType() == ExpressionType.SCALAR) {
+                    type = operation.rhs.getExpressionType();
+                } else {
+                    type = operation.lhs.getExpressionType();
+                }
+            }
+
+            while (!(parent instanceof VariableAssignment)) {
+                parent = popAndPeek();
+            }
+            ((VariableAssignment) parent).name.setExpressionType(type);
+        }
+    }
+
+    private ASTNode popAndPeek() {
+        this.currentContainer.pop();
+        return this.currentContainer.peek();
+    }
+
+    private void addChildToParent(ASTNode node) {
+        this.currentContainer.peek().addChild(node);
+    }
+
+    private void addChildToParentAndPush(ASTNode node) {
+        addChildToParent(node);
+        this.currentContainer.push(node);
     }
 
 }

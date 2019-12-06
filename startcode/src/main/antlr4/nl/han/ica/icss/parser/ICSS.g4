@@ -1,8 +1,9 @@
 grammar ICSS;
 
 //--- LEXER: ---
-// IF support:
+// IF/ELSE support:
 IF: 'if';
+ELSE: 'else';
 BOX_BRACKET_OPEN: '[';
 BOX_BRACKET_CLOSE: ']';
 
@@ -43,31 +44,36 @@ ASSIGNMENT_OPERATOR: ':=';
 // Style
 stylesheet: variableAssignment* stylerule* EOF;
 stylerule: selector stylerulecontent;
-stylerulecontent: OPEN_BRACE (declaration | ifClause | variableAssignment)* CLOSE_BRACE;
+stylerulecontent: OPEN_BRACE (declaration | ifClause | (ifClause elseClause) | variableAssignment)* CLOSE_BRACE;
 
 // Selector
-selector: classSelector | (idSelector | tagSelector);
+selector: classSelector | idSelector | tagSelector;
 classSelector: CLASS_IDENT;
 idSelector: ID_IDENT;
 tagSelector: LOWER_IDENT;
 
+
 // Declaration
 declaration: propertyName COLON expression SEMICOLON;
-expression: literal | operation | ifClause;
+expression:
+    expression multiplyOperation expression |
+    expression addOperation expression |
+    expression subtractOperation expression |
+    literal | variableAssignment;
 propertyName: LOWER_IDENT;
 
 // Variable
 variableAssignment: variableReference ASSIGNMENT_OPERATOR expression SEMICOLON;
 variableReference: CAPITAL_IDENT;
 
-// Operation
-operation: addOperation | subtractOperation | multiplyOperation;
-addOperation: literal PLUS literal | literal PLUS operation;
-subtractOperation: literal MIN literal | literal MIN operation;
-multiplyOperation: literal MUL literal | literal MUL operation;
-
 // If clause
 ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE stylerulecontent;
+elseClause: ELSE stylerulecontent;
+
+// Operation
+multiplyOperation: MUL;
+subtractOperation: MIN;
+addOperation: PLUS;
 
 // Literal
 literal: pixelLiteral | percentageLiteral | colorLiteral | scalarLiteral | boolLiteral | variableReference;
